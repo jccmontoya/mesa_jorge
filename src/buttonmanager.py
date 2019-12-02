@@ -15,28 +15,36 @@ BUTTONS = [RED, GREEN, BLUE, YELLOW]
 
 import rospy
 from std_msgs.msg import Bool
-from mesa_msgs.msg import button_msg as BM, color_selected as CS, light_selected as LS
+from mesa_msgs.msg import button_msg as BM, color_selected as CS, light_selected as LS, audio_button as AB
 import collections
 
-class button_manager:
+
+class ButtonManager:
     def __init__(self):
         print("Initializing button_manager")
-        rospy.Subscriber('button_status',BM,self.button_callback)
+        rospy.Subscriber('light_button_status', BM, self.light_button_callback)
+        rospy.Subscriber('audio_button_status', BM, self.audio_button_callback)
         self.color_pub = rospy.Publisher('color_selected', CS, queue_size=10)
-        def run(self):
-            while not rospy.is_shutdown():
-                rospy.sleep(0.5)
+        self.mode = 1
+        self.audio_pub = rospy.Publisher('audio_button',AB, queue_size=10)
+        print("button_manager initialized")
 
-    def button_callback(self,data):
-        count = 0
-        light_buttons = data.buttons_pressed[:4]
-        sound_buttons = data.buttons_pressed[4:]
+    def audio_button_callback(self,sound_buttons):
         sound_index = self.button_2_song_index(sound_buttons)
+        ab_message = AB()
+        ab_message.button_code = sound_index
+        ab_message.mode = self.mode
+        self.audio_pub.publish(ab_message)
+
+    def light_button_callback(self, light_buttons):
+        count = 0
+        #light_buttons = data.buttons_pressed[:4]
+        #sound_buttons = data.buttons_pressed[4:]
         index = 0
         count_light = self.count_true(light_buttons)
         buttons = []
         while index < len(light_buttons) and count < 2:
-             if light_buttons[index] == True:
+             if light_buttons[index]:
                  buttons.append(BUTTONS[index])
                  count = count +1
         #         red = max(red,BUTTONS[index][0])
@@ -64,13 +72,13 @@ class button_manager:
                     color = BROWN
                 elif buttons[1] == BLUE:
                     color = PURPLE
-                elif buttons[1]  == YELLOW:
+                elif buttons[1] == YELLOW:
                     color = ORANGE
             elif buttons[0] == GREEN:
-                if buttons[1]== BLUE:
+                if buttons[1] == BLUE:
                     color = TURQUOISE
                 elif buttons[1] == YELLOW:
-                    color =  [128, 255, 0]
+                    color = [128, 255, 0]
             else:
                 color = GREEN
         return color
@@ -87,7 +95,7 @@ class button_manager:
 
 if __name__ == '__main__':
     rospy.init_node("button_manager")
-    node = button_manager()
+    node = ButtonManager()
     rospy.spin()
 
 

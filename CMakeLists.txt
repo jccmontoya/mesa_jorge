@@ -9,7 +9,8 @@ project(mesa_jorge)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
 std_msgs
-message_generation
+rospy
+mesa_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -19,7 +20,7 @@ message_generation
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+ catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -46,10 +47,11 @@ message_generation
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   button_msg.msg
- )
+# add_message_files(
+#   FILES
+#   button_msg.msg
+#   color_selected.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -69,7 +71,10 @@ message_generation
 # generate_messages(
 #   DEPENDENCIES
 #   std_msgs  # Or other packages containing msgs
-# )
+#   mesa_msgs
+#)
+
+
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -103,7 +108,9 @@ message_generation
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES mesa_jorge
-  CATKIN_DEPENDS  std_msgs message_runtime
+  CATKIN_DEPENDS  std_msgs  rospy
+  DEPENDS mesa_msgs
+  
 )
 
 ###########
@@ -125,7 +132,7 @@ include_directories(
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ # add_dependencies(mesa_msgs ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context

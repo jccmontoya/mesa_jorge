@@ -1,0 +1,16 @@
+rostopic pub button_status mesa_msgs/button_msg "header:
+  seq: 0
+  stamp:
+    secs: 0
+    nsecs: 0
+  frame_id: ''
+buttons_pressed:
+- true
+- false
+- true
+- false
+buttons_released:
+- true
+- false
+- true
+- false" -1
