@@ -14,8 +14,7 @@ TURQUOISE = [0, 255, 255]
 BUTTONS = [RED, GREEN, BLUE, YELLOW]
 
 import rospy
-from std_msgs.msg import Bool
-from mesa_msgs.msg import button_msg as BM, color_selected as CS, light_selected as LS, audio_button as AB
+from mesa_msgs.msg import button_msg as BM, color_selected as CS, audio_button as AB
 import collections
 
 
@@ -30,32 +29,32 @@ class ButtonManager:
         print("button_manager initialized")
 
     def audio_button_callback(self,sound_buttons):
-        sound_index = self.button_2_song_index(sound_buttons)
+        sound_index = self.button_2_song_index(sound_buttons.buttons_pressed)
         ab_message = AB()
         ab_message.button_code = sound_index
         ab_message.mode = self.mode
+        print('Audio button received')
+        print(sound_buttons.buttons_pressed)
+        print('Sound index: ', sound_index)
+        print('Publishing Audio Button')
         self.audio_pub.publish(ab_message)
 
-    def light_button_callback(self, light_buttons):
+    def light_button_callback(self, data):
         count = 0
-        #light_buttons = data.buttons_pressed[:4]
-        #sound_buttons = data.buttons_pressed[4:]
+        light_buttons = data.buttons_pressed
         index = 0
-        count_light = self.count_true(light_buttons)
         buttons = []
         while index < len(light_buttons) and count < 2:
              if light_buttons[index]:
                  buttons.append(BUTTONS[index])
                  count = count +1
-        #         red = max(red,BUTTONS[index][0])
-        #         green = max(green, BUTTONS[index][1])
-        #         blue = max(blue, BUTTONS[index][2])
              index = index + 1
-        # print([red, green, blue])
         color = self.mix_color(buttons, count)
-        print(color)
+        print('Light button received')
+        print(data.buttons_pressed)
+        print('Color: ', color)
         color_sel = CS()
-        color_sel.color=color
+        color_sel.color = color
         self.color_pub.publish(color_sel)
 
     def count_true(self,list):
