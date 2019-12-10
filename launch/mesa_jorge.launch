@@ -1,0 +1,5 @@
+<launch>
+	<node name="button_manager" pkg="mesa_jorge" type="buttonmanager.py" respawn="true" output="screen"/>
+	<node name="audio_selector" pkg="mesa_jorge" type="audioselector.py" respawn="true" output="screen"/>
+	<node name="audio_manager" pkg="mesa_jorge" type="audiomanager.py" respawn="true" output="screen"/>
+</launch>
