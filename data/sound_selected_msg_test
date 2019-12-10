@@ -1,0 +1,8 @@
+rostopic pub /audio_selection mesa_msgs/sound_selected "header:
+  seq: 0
+  stamp:
+    secs: 0
+    nsecs: 0
+  frame_id: ''
+sound_selected: '/home/piwi/piwi_ws/src/mesa_jorge/data/mp3/air/Aladdin - A Whole New World [High Quality].mp3'
+category: 'air'" -1
