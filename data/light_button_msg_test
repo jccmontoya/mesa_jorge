@@ -1,4 +1,4 @@
-rostopic pub button_status mesa_msgs/button_msg "header:
+rostopic pub light_button_status mesa_msgs/button_msg "header:
   seq: 0
   stamp:
     secs: 0
@@ -9,16 +9,8 @@ buttons_pressed:
 - true
 - true
 - false
-- true
-- false
-- true
-- false
 buttons_released:
 - false
 - true
 - false
-- false
-- true
-- false
-- true
 - false" -1

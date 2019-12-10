@@ -1,4 +1,4 @@
-rostopic pub button_status mesa_msgs/button_msg "header:
+rostopic pub audio_button_status mesa_msgs/button_msg "header:
   seq: 0
   stamp:
     secs: 0
@@ -7,7 +7,7 @@ rostopic pub button_status mesa_msgs/button_msg "header:
 buttons_pressed:
 - true
 - false
-- true
+- false
 - false
 buttons_released:
 - true
