@@ -1,13 +1,31 @@
 /* 
  * Button Example for Rosserial
  */
-
+#include <Adafruit_NeoPixel.h>
 #include <ros.h>
 #include <std_msgs/Bool.h>
 #include <mesa_msgs/button_msg.h>
-
+#include <mesa_msgs/arduino_cmd.h>
+#include <mesa_msgs/rgb_msg.h>
 
 ros::NodeHandle nh;
+
+#define PIN        4
+#define NUMPIXELS 50
+#define NUMBUTTONS 8
+
+
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+void messageCb( const mesa_msgs::arduino_cmd& message){
+  for(int i=0;i<=NUMPIXELS;i++)
+  {
+     pixels.setPixelColor(i, pixels.Color(message.msg[i].r,message.msg[i].g,message.msg[i].b ));
+  }
+  pixels.show();
+}
+
+ros::Subscriber<mesa_msgs::arduino_cmd> sub("toggle_led", messageCb );
 
 mesa_msgs::button_msg pushed_msg;
 // std_msgs::Bool pushed_msg;
@@ -25,7 +43,7 @@ void setup()
 {
   nh.initNode();
   nh.advertise(pub_button);
-  
+  nh.subscribe(sub);
   //initialize an LED output pin 
   //and a input pin for our push button
   pinMode(led_pin, OUTPUT);
@@ -36,10 +54,10 @@ void setup()
   
   //The button is a normally button
   last_reading = ! digitalRead(button_pin);
-
-  for(int i = 0 ; i<4; i++)
+  pixels.begin();
+  for(int i = 0 ; i<8; i++)
   {
-    pushed_msg.buttons_pressed[i] = false;
+    pushed_msg.buttons[i] = false;
   }
  
 }
@@ -57,7 +75,7 @@ void loop()
   //if the button value has not changed for the debounce delay, we know its stable
   if ( !published && (millis() - last_debounce_time)  > debounce_delay) {
     digitalWrite(led_pin, reading);
-    pushed_msg.buttons_pressed[0] = reading;
+    pushed_msg.buttons[0] = reading;
     pub_button.publish(&pushed_msg);
     published = true;
   }
