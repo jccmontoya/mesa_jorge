@@ -14,7 +14,7 @@ TURQUOISE = [0, 255, 255]
 BUTTONS = [RED, GREEN, BLUE, YELLOW]
 
 import rospy
-from mesa_msgs.msg import button_msg as BM, color_selected as CS, audio_button as AB
+from mesa_msgs.msg import button_msg as BM, arduino_cmd as ACMD, audio_button as AB
 import collections
 
 
@@ -23,12 +23,12 @@ class ButtonManager:
         print("Initializing button_manager")
         rospy.Subscriber('light_button_status', BM, self.light_button_callback)
         rospy.Subscriber('audio_button_status', BM, self.audio_button_callback)
-        self.color_pub = rospy.Publisher('color_selected', CS, queue_size=10)
+        self.color_pub = rospy.Publisher('color_selected', ACMD, queue_size=10)
         self.mode = 1
-        self.audio_pub = rospy.Publisher('audio_button',AB, queue_size=10)
+        self.audio_pub = rospy.Publisher('audio_button', AB, queue_size=10)
         print("button_manager initialized")
 
-    def audio_button_callback(self,sound_buttons):
+    def audio_button_callback(self, sound_buttons):
         sound_index = self.button_2_song_index(sound_buttons.buttons_pressed)
         ab_message = AB()
         ab_message.button_code = sound_index
@@ -53,9 +53,12 @@ class ButtonManager:
         print('Light button received')
         print(data.buttons_pressed)
         print('Color: ', color)
-        color_sel = CS()
-        color_sel.color = color
-        self.color_pub.publish(color_sel)
+        arduino_cmd = ACMD()
+        for i in arduino_cmd.msg:
+            i.r = color[0]
+            i.g = color[1]
+            i.b = color[2]
+        self.color_pub.publish(arduino_cmd)
 
     def count_true(self,list):
         counter = collections.Counter(list)
