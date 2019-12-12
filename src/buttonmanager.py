@@ -14,8 +14,9 @@ TURQUOISE = [0, 255, 255]
 BUTTONS = [RED, GREEN, BLUE, YELLOW]
 
 import rospy
-from mesa_msgs.msg import button_msg as BM, arduino_cmd as ACMD, audio_button as AB
+from mesa_msgs.msg import button_msg as BM, arduino_cmd as ACMD, audio_button as AB, volume_cmd as VC
 import collections
+import os
 
 
 class ButtonManager:
@@ -23,10 +24,16 @@ class ButtonManager:
         print("Initializing button_manager")
         rospy.Subscriber('light_button_status', BM, self.light_button_callback)
         rospy.Subscriber('audio_button_status', BM, self.audio_button_callback)
+        rospy.Subscriber('volume_control', VC, self.volume_control_callback)
         self.color_pub = rospy.Publisher('color_selected', ACMD, queue_size=10)
         self.mode = 1
         self.audio_pub = rospy.Publisher('audio_button', AB, queue_size=10)
         print("button_manager initialized")
+
+    def volume_control_callback(self, volume):
+        vol_str = 'amixer -D pulse sset Master ' + str(volume.volume_rate) + '%'
+        print(vol_str)
+        os.system(vol_str)
 
     def audio_button_callback(self, sound_buttons):
         sound_index = self.button_2_song_index(sound_buttons.buttons_pressed)
