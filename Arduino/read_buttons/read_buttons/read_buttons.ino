@@ -5,8 +5,7 @@
 #include <ros.h>
 #include <std_msgs/Bool.h>
 #include <mesa_msgs/button_msg.h>
-#include <mesa_msgs/arduino_cmd.h>
-#include <mesa_msgs/rgb_msg.h>
+#include <mesa_msgs/arduino_serialize_msg.h>
 
 ros::NodeHandle nh;
 
@@ -17,15 +16,14 @@ ros::NodeHandle nh;
 
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-void messageCb( const mesa_msgs::arduino_cmd& message){
-  for(int i=0;i<=NUMPIXELS;i++)
-  {
-     pixels.setPixelColor(i, pixels.Color(message.msg[i].r,message.msg[i].g,message.msg[i].b ));
-  }
-  pixels.show();
+void messageCb( const mesa_msgs::arduino_serialize_msg& message){
+
+  pixels.setPixelColor(message.current, pixels.Color(message.values.r,message.values.g,message.values.b ));
+  if(message.current==message.total-1)
+    pixels.show();
 }
 
-ros::Subscriber<mesa_msgs::arduino_cmd> sub("toggle_led", messageCb );
+ros::Subscriber<mesa_msgs::arduino_serialize_msg> sub("arduino_leds", messageCb );
 
 mesa_msgs::button_msg pushed_msg;
 // std_msgs::Bool pushed_msg;
