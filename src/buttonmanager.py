@@ -36,19 +36,19 @@ class ButtonManager:
         os.system(vol_str)
 
     def audio_button_callback(self, sound_buttons):
-        sound_index = self.button_2_song_index(sound_buttons.buttons_pressed)
+        sound_index = self.button_2_song_index(sound_buttons.buttons)
         ab_message = AB()
         ab_message.button_code = sound_index
         ab_message.mode = self.mode
         print('Audio button received')
-        print(sound_buttons.buttons_pressed)
+        print(sound_buttons.buttons)
         print('Sound index: ', sound_index)
         print('Publishing Audio Button')
         self.audio_pub.publish(ab_message)
 
     def light_button_callback(self, data):
         count = 0
-        light_buttons = data.buttons_pressed
+        light_buttons = data.buttons
         index = 0
         buttons = []
         while index < len(light_buttons) and count < 2:
@@ -58,7 +58,7 @@ class ButtonManager:
              index = index + 1
         color = self.mix_color(buttons, count)
         print('Light button received')
-        print(data.buttons_pressed)
+        print(data.buttons)
         print('Color: ', color)
         arduino_cmd = ACMD()
         for i in arduino_cmd.msg:

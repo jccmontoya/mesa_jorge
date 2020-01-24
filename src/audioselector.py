@@ -13,7 +13,7 @@ class AudioSelector:
         rospy.Subscriber('audio_button', AB, self.audio_selection_callback)
         self.audio_selected_pub = rospy.Publisher('audio_selection', SS, queue_size=10)
         rospack = rospkg.RosPack()
-        self.mode = -1
+        self.mode = 1
         self.audio_path = rospack.get_path('mesa_jorge') + '/data/mp3/'
 
         self.air_path = self.audio_path + 'music/air/'

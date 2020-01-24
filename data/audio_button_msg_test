@@ -1,16 +1,10 @@
-rostopic pub audio_button_status mesa_msgs/button_msg "header:
-  seq: 0
-  stamp:
-    secs: 0
-    nsecs: 0
-  frame_id: ''
-buttons_pressed:
+rostopic pub audio_button_status mesa_msgs/button_msg "
+buttons:
 - true
 - false
 - false
 - false
-buttons_released:
-- true
 - false
-- true
+- false
+- false
 - false" -1
