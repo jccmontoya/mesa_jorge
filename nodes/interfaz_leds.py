@@ -18,9 +18,9 @@ class subypubs:
         self.leds_pub  =rospy.Publisher ('arduino_leds',arduino_serialize_msg,queue_size=10)
         self.mensaje=arduino_serialize_msg()
     def leds_callback(self,leds_value):
-        for i in range(120):
+        for i in range(leds_value.TOTAL_LEDS):
         		self.mensaje.values=leds_value.msg[i]
-        		self.mensaje.total=120
+        		self.mensaje.total=leds_value.TOTAL_LEDS
         		self.mensaje.current=i
         		self.mensaje.fade=leds_value.fade
         		self.leds_pub.publish(self.mensaje)
