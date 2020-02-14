@@ -14,15 +14,15 @@ import sys
 class subypubs:
     def __init__(self):
         #self.pub = rospy.Publisher('/out_value', Int32, latch=True)
-        self.command_sub =rospy.Subscriber('toogle_leds',arduino_cmd,self.leds_callback)
+        self.command_sub =rospy.Subscriber('color_selected',arduino_cmd,self.leds_callback)
         self.leds_pub  =rospy.Publisher ('arduino_leds',arduino_serialize_msg,queue_size=10)
         self.mensaje=arduino_serialize_msg()
     def leds_callback(self,leds_value):
-        for i in range(50):
+        for i in range(120):
         		self.mensaje.values=leds_value.msg[i]
-        		self.mensaje.total=50
+        		self.mensaje.total=120
         		self.mensaje.current=i
-        		self.mensaje.fade=False
+        		self.mensaje.fade=leds_value.fade
         		self.leds_pub.publish(self.mensaje)
         		time.sleep(0.005)
         
